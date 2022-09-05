@@ -1,0 +1,4 @@
+npx create-react-app chart --template typescript
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+npm install chart.js react-chartjs-2
