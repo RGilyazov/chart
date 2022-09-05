@@ -3,6 +3,7 @@
         "autoprefixer",
         "chartjs",
         "postcss",
+        "reduxjs",
         "tailwindcss"
     ]
 }

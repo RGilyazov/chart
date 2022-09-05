@@ -1,6 +1,15 @@
 import React from "react";
-import Chart from "./components/Chart";
+import Chart from "../components/Chart";
 import { compile, EvalFunction } from "mathjs";
+import { FunctionList } from "../features/functionsList/functionList";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectFunctions,
+  addFunction,
+  deleteFunction,
+  changeFunction,
+  functionItemData,
+} from "../features/functionsList/functionsSlice";
 
 function generateData(
   min: number,
@@ -39,9 +48,29 @@ function App() {
   const steep = 0.2;
   const funcs = ["sin(x)", "cos(x)"];
   const data = generateData(min, max, steep, funcs);
+  const dispatch = useDispatch();
+
+  const { functions } = useSelector(selectFunctions);
+
+  const handleAdd = () => {
+    dispatch(addFunction());
+  };
+  const handleDelete = (index: number) => {
+    dispatch(deleteFunction({ index }));
+  };
+  const handleChange = (index: number, value: functionItemData) => {
+    dispatch(changeFunction({ index, value }));
+    return true;
+  };
 
   return (
     <div className="App">
+      <FunctionList
+        functions={functions}
+        onAdd={handleAdd}
+        onDelete={handleDelete}
+        onEdit={handleChange}
+      />
       hello world
       <Chart data={data} />
     </div>
