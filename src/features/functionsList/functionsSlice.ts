@@ -1,16 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-
-export type functionItemData = { value: string };
+import { compile, evaluate } from "mathjs";
+export type functionItemData = {
+  value: string;
+  checked?: boolean;
+  correct?: boolean;
+};
 export type functionListData = functionItemData[];
 
 export type functionState = { functions: functionListData };
 const initialState: functionState = {
-  functions: [{ value: "sin(x)" }, { value: "cos(x)" }],
+  functions: [
+    { value: "sin(x)", checked: true, correct: true },
+    { value: "cos(x)", checked: true, correct: true },
+  ],
 };
 
 export const selectFunctions = (state: RootState) => {
-  console.log(state);
   return state.functions;
 };
 
@@ -19,7 +25,7 @@ export const functionsSlice = createSlice({
   initialState: initialState,
   reducers: {
     addFunction(state: functionState, action: PayloadAction) {
-      state.functions.push({ value: "x/2" });
+      state.functions.push({ value: "", checked: true, correct: false });
     },
     deleteFunction(
       state: functionState,
@@ -33,8 +39,17 @@ export const functionsSlice = createSlice({
       state: functionState,
       action: PayloadAction<{ index: number; value: functionItemData }>
     ) {
+      const newValue = action.payload.value;
+      try {
+        evaluate(newValue.value, { x: 0 });
+        newValue.checked = true;
+        newValue.correct = true;
+      } catch {
+        newValue.checked = true;
+        newValue.correct = false;
+      }
       state.functions = state.functions.map((value, index) =>
-        index === action.payload.index ? action.payload.value : value
+        index === action.payload.index ? newValue : value
       );
     },
   },

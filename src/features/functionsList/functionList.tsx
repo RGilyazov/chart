@@ -1,6 +1,7 @@
 import React from "react";
 import { functionListData, functionItemData } from "./functionsSlice";
 import { FunctionListItem } from "./functionListItem";
+import { Button } from "../../components/Button";
 
 export const FunctionList = (Props: {
   functions: functionListData;
@@ -9,7 +10,7 @@ export const FunctionList = (Props: {
   onEdit: (index: number, newValue: functionItemData) => boolean;
 }) => {
   return (
-    <div>
+    <div className="flex flex-col">
       {Props.functions.map((func, index) => (
         <FunctionListItem
           id={index}
@@ -18,7 +19,10 @@ export const FunctionList = (Props: {
           onDelete={Props.onDelete}
         />
       ))}
-      <button onClick={Props.onAdd}>add</button>
+      <div>
+        {" "}
+        <Button onClick={Props.onAdd} caption="Add" />
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import Chart from "../components/Chart";
+import Chart from "../features/chart/Chart";
 import { compile, EvalFunction } from "mathjs";
 import { FunctionList } from "../features/functionsList/functionList";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,13 +9,20 @@ import {
   deleteFunction,
   changeFunction,
   functionItemData,
+  functionListData,
 } from "../features/functionsList/functionsSlice";
+import { NumberInput } from "../features/chart/NumberInput";
+import {
+  selectChart,
+  updateMin,
+  updateMax,
+} from "../features/chart/chartSlice";
 
 function generateData(
   min: number,
   max: number,
   steep: number,
-  functions: string[]
+  functions: functionListData
 ) {
   const labels = [];
   const compiledFunctions: EvalFunction[] = [];
@@ -23,11 +30,11 @@ function generateData(
     [];
   functions.forEach((func, index) => {
     datasets.push({
-      label: func,
+      label: func.value,
       data: [],
       backgroundColor: "rgba(255, 99, 132, 0.5)",
     });
-    compiledFunctions.push(compile(func));
+    compiledFunctions.push(compile(func.value));
   });
   let x = min;
   while (x < max) {
@@ -43,14 +50,18 @@ function generateData(
 }
 
 function App() {
-  const min = -10;
-  const max = 10;
-  const steep = 0.2;
-  const funcs = ["sin(x)", "cos(x)"];
-  const data = generateData(min, max, steep, funcs);
   const dispatch = useDispatch();
 
   const { functions } = useSelector(selectFunctions);
+  const { min, max } = useSelector(selectChart);
+
+  const steep = 0.2;
+  const data = generateData(
+    min,
+    max,
+    steep,
+    functions.filter((func) => func.checked && func.correct)
+  );
 
   const handleAdd = () => {
     dispatch(addFunction());
@@ -62,17 +73,28 @@ function App() {
     dispatch(changeFunction({ index, value }));
     return true;
   };
-
+  const handleMinEdit = (newValue: number) => {
+    dispatch(updateMin({ value: newValue }));
+  };
+  const handleMaxEdit = (newValue: number) => {
+    dispatch(updateMax({ value: newValue }));
+  };
   return (
     <div className="App">
+      <div className="flex flex-col items-center text-xl font-bold">
+        <div> ENTER FUNCTIONS TO DRAW THE GRAPH </div>
+      </div>
       <FunctionList
         functions={functions}
         onAdd={handleAdd}
         onDelete={handleDelete}
         onEdit={handleChange}
       />
-      hello world
-      <Chart data={data} />
+      <div>
+        <NumberInput value={min} onEdit={handleMinEdit} />
+        <NumberInput value={max} onEdit={handleMaxEdit} />
+      </div>
+      <Chart data={data} caption="" />
     </div>
   );
 }

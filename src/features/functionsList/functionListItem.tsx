@@ -1,5 +1,6 @@
 import React from "react";
 import { functionItemData } from "./functionsSlice";
+import { Button } from "../../components/Button";
 
 export const FunctionListItem = (Props: {
   function: functionItemData;
@@ -15,9 +16,13 @@ export const FunctionListItem = (Props: {
   };
 
   return (
-    <div>
-      <input value={Props.function.value} onChange={handleChange}></input>
-      <button onClick={handleDelete}>delete</button>
+    <div className="flex flex-row align-baseline border-b-2 border-gray-200 border-solid">
+      <input
+        className="flex-1 italic font-bold text-blue-900 "
+        value={Props.function.value}
+        onChange={handleChange}
+      ></input>
+      <Button onClick={handleDelete} caption="delete" />
     </div>
   );
 };
