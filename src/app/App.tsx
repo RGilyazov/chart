@@ -8,7 +8,6 @@ import {
   addFunction,
   deleteFunction,
   changeFunction,
-  functionItemData,
   functionListData,
 } from "../features/functionsList/functionsSlice";
 import { NumberInput } from "../features/chart/NumberInput";
@@ -69,7 +68,7 @@ function App() {
   const handleDelete = (index: number) => {
     dispatch(deleteFunction({ index }));
   };
-  const handleChange = (index: number, value: functionItemData) => {
+  const handleChange = (index: number, value: string) => {
     dispatch(changeFunction({ index, value }));
     return true;
   };

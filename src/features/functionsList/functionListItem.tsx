@@ -6,10 +6,10 @@ export const FunctionListItem = (Props: {
   function: functionItemData;
   id: number;
   onDelete: (index: number) => void;
-  onEdit: (index: number, newValue: functionItemData) => boolean;
+  onEdit: (index: number, newValue: string) => boolean;
 }) => {
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    Props.onEdit(Props.id, { value: e.currentTarget.value.toString() });
+    Props.onEdit(Props.id, e.currentTarget.value.toString());
   };
   const handleDelete = (e: React.FormEvent<HTMLButtonElement>) => {
     Props.onDelete(Props.id);

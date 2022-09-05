@@ -1,20 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-import { compile, evaluate } from "mathjs";
+import { evaluate } from "mathjs";
 export type functionItemData = {
   value: string;
   checked?: boolean;
   correct?: boolean;
+  id: number;
 };
 export type functionListData = functionItemData[];
 
 export type functionState = { functions: functionListData };
 const initialState: functionState = {
   functions: [
-    { value: "sin(x)", checked: true, correct: true },
-    { value: "cos(x)", checked: true, correct: true },
+    { value: "sin(x)", checked: true, correct: true, id: -1 },
+    { value: "cos(x)", checked: true, correct: true, id: -2 },
   ],
 };
+
+let lastListId = 1;
 
 export const selectFunctions = (state: RootState) => {
   return state.functions;
@@ -25,7 +28,13 @@ export const functionsSlice = createSlice({
   initialState: initialState,
   reducers: {
     addFunction(state: functionState, action: PayloadAction) {
-      state.functions.push({ value: "", checked: true, correct: false });
+      lastListId += 1;
+      state.functions.push({
+        value: "",
+        checked: true,
+        correct: false,
+        id: lastListId,
+      });
     },
     deleteFunction(
       state: functionState,
@@ -37,20 +46,26 @@ export const functionsSlice = createSlice({
     },
     changeFunction(
       state: functionState,
-      action: PayloadAction<{ index: number; value: functionItemData }>
+      action: PayloadAction<{ index: number; value: string }>
     ) {
       const newValue = action.payload.value;
+      let checked: boolean;
+      let correct: boolean;
       try {
-        evaluate(newValue.value, { x: 0 });
-        newValue.checked = true;
-        newValue.correct = true;
+        evaluate(newValue, { x: 0 });
+        checked = true;
+        correct = true;
       } catch {
-        newValue.checked = true;
-        newValue.correct = false;
+        checked = true;
+        correct = false;
       }
-      state.functions = state.functions.map((value, index) =>
-        index === action.payload.index ? newValue : value
-      );
+      state.functions.forEach((func, index) => {
+        if (index === action.payload.index) {
+          func.value = newValue;
+          func.checked = checked;
+          func.correct = correct;
+        }
+      });
     },
   },
 });
