@@ -1,65 +1,39 @@
 import React from "react";
 import Chart from "../features/chart/Chart";
-import { compile, EvalFunction } from "mathjs";
-import { FunctionList } from "../features/functionsList/functionList";
+import { FunctionList } from "../features/functionsList/FunctionList";
 import { useSelector, useDispatch } from "react-redux";
+import { useMemo } from "react";
 import {
   selectFunctions,
   addFunction,
   deleteFunction,
   changeFunction,
-  functionListData,
+  changeFunctionColor,
 } from "../features/functionsList/functionsSlice";
-import { NumberInput } from "../features/chart/NumberInput";
+import { NumberInput } from "../components/NumberInput";
 import {
   selectChart,
   updateMin,
   updateMax,
+  updateSteep,
 } from "../features/chart/chartSlice";
-
-function generateData(
-  min: number,
-  max: number,
-  steep: number,
-  functions: functionListData
-) {
-  const labels = [];
-  const compiledFunctions: EvalFunction[] = [];
-  const datasets: { label: string; data: number[]; backgroundColor: string }[] =
-    [];
-  functions.forEach((func, index) => {
-    datasets.push({
-      label: func.value,
-      data: [],
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    });
-    compiledFunctions.push(compile(func.value));
-  });
-  let x = min;
-  while (x < max) {
-    labels.push(x.toFixed(1));
-    for (let ind = 0; ind < functions.length; ind++)
-      datasets[ind].data.push(compiledFunctions[ind].evaluate({ x: x }));
-    x += steep;
-  }
-  return {
-    labels,
-    datasets,
-  };
-}
+import { generateData } from "../features/functionsList/functionUtils";
 
 function App() {
   const dispatch = useDispatch();
 
   const { functions } = useSelector(selectFunctions);
-  const { min, max } = useSelector(selectChart);
+  const { min, max, steep } = useSelector(selectChart);
 
-  const steep = 0.2;
-  const data = generateData(
-    min,
-    max,
-    steep,
-    functions.filter((func) => func.checked && func.correct)
+  const data = useMemo(
+    () =>
+      generateData(
+        min,
+        max,
+        steep,
+        functions.filter((func) => func.checked && func.correct)
+      ),
+    [steep, min, max, functions]
   );
 
   const handleAdd = () => {
@@ -78,6 +52,12 @@ function App() {
   const handleMaxEdit = (newValue: number) => {
     dispatch(updateMax({ value: newValue }));
   };
+  const handleSteepEdit = (newValue: number) => {
+    dispatch(updateSteep({ value: newValue }));
+  };
+  const handleColorEdit = (index: number, value: string) => {
+    dispatch(changeFunctionColor({ index, value }));
+  };
   return (
     <div className="App">
       <div className="flex flex-col items-center text-xl font-bold">
@@ -88,10 +68,30 @@ function App() {
         onAdd={handleAdd}
         onDelete={handleDelete}
         onEdit={handleChange}
+        onColorEdit={handleColorEdit}
       />
-      <div>
-        <NumberInput value={min} onEdit={handleMinEdit} />
-        <NumberInput value={max} onEdit={handleMaxEdit} />
+      <div className="flex flex-col items-center text-xl font-bold">
+        <div> ENTER GRAPH PARAMETERS </div>
+      </div>
+      <div className="flex flex-row">
+        <NumberInput
+          value={min}
+          id="input-min"
+          caption="Start:"
+          onEdit={handleMinEdit}
+        />
+        <NumberInput
+          value={max}
+          id="input-max"
+          caption="End:"
+          onEdit={handleMaxEdit}
+        />
+        <NumberInput
+          value={steep}
+          id="input-steep"
+          caption="Steep:"
+          onEdit={handleSteepEdit}
+        />
       </div>
       <Chart data={data} caption="" />
     </div>

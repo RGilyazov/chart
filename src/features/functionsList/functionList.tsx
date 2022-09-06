@@ -1,6 +1,6 @@
 import React from "react";
 import { functionListData } from "./functionsSlice";
-import { FunctionListItem } from "./functionListItem";
+import { FunctionListItem } from "./FunctionListItem";
 import { Button } from "../../components/Button";
 
 export const FunctionList = (Props: {
@@ -8,6 +8,7 @@ export const FunctionList = (Props: {
   onAdd: () => void;
   onDelete: (index: number) => void;
   onEdit: (index: number, newValue: string) => boolean;
+  onColorEdit: (index: number, newValue: string) => void;
 }) => {
   return (
     <div className="flex flex-col">
@@ -18,9 +19,10 @@ export const FunctionList = (Props: {
           function={func}
           onEdit={Props.onEdit}
           onDelete={Props.onDelete}
+          onColorEdit={Props.onColorEdit}
         />
       ))}
-      <div>
+      <div className="mt-2">
         {" "}
         <Button onClick={Props.onAdd} caption="Add" />
       </div>

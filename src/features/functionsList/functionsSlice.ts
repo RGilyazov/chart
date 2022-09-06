@@ -6,14 +6,16 @@ export type functionItemData = {
   checked?: boolean;
   correct?: boolean;
   id: number;
+  color: string;
 };
 export type functionListData = functionItemData[];
 
 export type functionState = { functions: functionListData };
 const initialState: functionState = {
   functions: [
-    { value: "sin(x)", checked: true, correct: true, id: -1 },
-    { value: "cos(x)", checked: true, correct: true, id: -2 },
+    { value: "sin(x)", checked: true, correct: true, id: -1, color: "#FF0000" },
+    { value: "cos(x)", checked: true, correct: true, id: -2, color: "#00FF00" },
+    { value: "x/4", checked: true, correct: true, id: -2, color: "#FFFF00" },
   ],
 };
 
@@ -34,6 +36,7 @@ export const functionsSlice = createSlice({
         checked: true,
         correct: false,
         id: lastListId,
+        color: "#0000FF",
       });
     },
     deleteFunction(
@@ -43,6 +46,12 @@ export const functionsSlice = createSlice({
       state.functions = state.functions.filter(
         (value, index) => index !== action.payload.index
       );
+    },
+    changeFunctionColor(
+      state: functionState,
+      action: PayloadAction<{ index: number; value: string }>
+    ) {
+      state.functions[action.payload.index].color = action.payload.value;
     },
     changeFunction(
       state: functionState,
@@ -69,7 +78,11 @@ export const functionsSlice = createSlice({
     },
   },
 });
-export const { addFunction, deleteFunction, changeFunction } =
-  functionsSlice.actions;
+export const {
+  addFunction,
+  deleteFunction,
+  changeFunction,
+  changeFunctionColor,
+} = functionsSlice.actions;
 
 export default functionsSlice.reducer;

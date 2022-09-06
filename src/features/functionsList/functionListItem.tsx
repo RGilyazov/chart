@@ -7,6 +7,7 @@ export const FunctionListItem = (Props: {
   id: number;
   onDelete: (index: number) => void;
   onEdit: (index: number, newValue: string) => boolean;
+  onColorEdit: (index: number, newValue: string) => void;
 }) => {
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     Props.onEdit(Props.id, e.currentTarget.value.toString());
@@ -15,9 +16,18 @@ export const FunctionListItem = (Props: {
     Props.onDelete(Props.id);
   };
 
+  const handleColorChange = (e: React.FormEvent<HTMLInputElement>) => {
+    Props.onColorEdit(Props.id, e.currentTarget.value);
+  };
   return (
-    <div className="flex flex-row align-baseline border-b-2 border-gray-200 border-solid">
+    <div className="flex flex-row items-center border-b-2 border-gray-200 border-solid">
       <input
+        type="color"
+        onChange={handleColorChange}
+        value={Props.function.color}
+      ></input>
+      <input
+        placeholder="write a function"
         className="flex-1 italic font-bold text-blue-900 "
         value={Props.function.value}
         onChange={handleChange}
