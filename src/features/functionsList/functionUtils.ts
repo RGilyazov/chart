@@ -1,5 +1,12 @@
 import { functionListData } from "./functionsSlice";
 import { EvalFunction, compile } from "mathjs";
+
+export function checkIntervalParams(min: number, max: number, steep: number) {
+  if (steep < 0 || (max - min) / steep > 1000) {
+    return "too many steeps, pls reduce interval or increase steep";
+  }
+  return "";
+}
 export function generateData(
   min: number,
   max: number,
@@ -18,7 +25,7 @@ export function generateData(
     });
     compiledFunctions.push(compile(func.value));
   });
-  if (steep > 0 && (max - min) / steep < 10000) {
+  if (checkIntervalParams(min, max, steep) === "") {
     let x = min;
     while (x < max) {
       labels.push(x.toFixed(1));

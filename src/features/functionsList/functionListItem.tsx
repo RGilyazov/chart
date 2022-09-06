@@ -32,6 +32,11 @@ export const FunctionListItem = (Props: {
         value={Props.function.value}
         onChange={handleChange}
       ></input>
+      {!Props.function.correct && (
+        <div className="text-red-500 font-bold mr-2 ml-2">
+          function is incorrect.
+        </div>
+      )}
       <Button onClick={handleDelete} caption="delete" />
     </div>
   );

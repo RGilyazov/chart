@@ -17,7 +17,10 @@ import {
   updateMax,
   updateSteep,
 } from "../features/chart/chartSlice";
-import { generateData } from "../features/functionsList/functionUtils";
+import {
+  generateData,
+  checkIntervalParams,
+} from "../features/functionsList/functionUtils";
 
 function App() {
   const dispatch = useDispatch();
@@ -58,6 +61,7 @@ function App() {
   const handleColorEdit = (index: number, value: string) => {
     dispatch(changeFunctionColor({ index, value }));
   };
+  const paramsError = checkIntervalParams(min, max, steep);
   return (
     <div className="App">
       <div className="flex flex-col items-center text-xl font-bold">
@@ -92,6 +96,9 @@ function App() {
           caption="Steep:"
           onEdit={handleSteepEdit}
         />
+        {paramsError === "" || (
+          <div className="text-red-500 font-bold mr-2 ml-2">{paramsError}</div>
+        )}
       </div>
       <Chart data={data} caption="" />
     </div>
