@@ -1,6 +1,6 @@
 # single page site for drawing graphs of various mathematical functions online
 
-[published on github pages](https://bboracul.github.io/chart/).
+[published on github pages](https://RGilyazov.github.io/chart/).
 
 # Packages used for this project:
 
